@@ -220,6 +220,8 @@ hexo new "abc" --path a/abc.md
 
 这会在 source/_post/a/ 目录下创建 abc.md，这里文件名不必和 new 后面的字符串相同。
 
+scaffolds/post.md 的内容就是每次 hexo new 命令后给文件填充的内容，可以自己修改哦。
+
 写文章时可以输入 `hexo server` 命令，在浏览器中预览博客，基本上改了博客就会改，但如果改了配置文件，可能就需要重新运行 `hexo server` 了。
 
 ## 使用 PS 和 Bash
@@ -274,3 +276,60 @@ git commit -m $commitMessage
 git push
 ```
 
+如果你用 linux
+
+```bash
+#!/bin/bash
+# push.sh
+# 自动提交并推送 Git 仓库，可选自定义 commit message + 时间戳
+
+# 读取第一个参数作为 msg，如果没输入就空
+msg="$1"
+
+# 获取当前时间
+timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+# 生成 commit message
+if [ -z "$msg" ]; then
+    commit_message="Auto commit at $timestamp"
+else
+    commit_message="$msg (at $timestamp)"
+fi
+
+# 添加所有修改
+git add .
+
+# 提交
+git commit -m "$commit_message"
+
+# 推送
+git push
+```
+
+## 更换 Butterfly 主题
+
+大家可以去 [hexo-theme-butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 查看官方文档，这个文档应该还是做得很好的。 
+
+由于不知道换啥主题，我就先换这个吧，因为听得比较多，然后我才发现，我之前不就是用的这个主题吗？也没事了，不知道为啥，现在就感觉设置这些很简单了，去年真的是感觉看文档都看不明白。现在感觉跟着文档弄，不懂的问问 gpt啥的，应该能解决 99% 的问题了。
+
+在项目根目录下运行
+
+```bash
+git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly
+```
+
+然后去 `_config.yml` 找到 theme，修改为 butterfly。
+
+```yml
+theme: butterfly
+```
+
+安装所需依赖，--save 参数可以将安装的依赖自动写入 packages.json，使得 npm run 命令可以下载需要的依赖。
+
+```bash
+npm install hexo-renderer-pug hexo-renderer-stylus --save
+```
+
+运行 hexo server 查看是否更换成功，提交代码即可完成更换。
+
+其实也挺简单的呀，很方便，可能是我去年太。。。
