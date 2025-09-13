@@ -66,7 +66,7 @@ disable_top_img: false
 default_top_img:
 
 # The banner image of index page
-index_img: /images/cover1.jpg
+index_img: /images/cover2.png
 
 # The banner image of archive page
 archive_img:
@@ -101,7 +101,7 @@ cover:
   archives_enable: true
   # When cover is not set, the default cover is displayed
   default_cover:
-    /images/cover2.png
+    /images/cover3.png
 
 # Replace Broken Images
 error_img:
