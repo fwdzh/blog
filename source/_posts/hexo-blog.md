@@ -104,3 +104,165 @@ git push -u origin main
 
 官方文档里给的这个文件是错的，我贴进去运行报错了。原因好像是把 landscape 当成 jecklly 的主题了，这个是 hexo 的默认主题，然后让 gpt 帮我改了一下，也有点不对，又让 deepseek 改了一下。
 
+以下是我的配置，已构建成功，大家可以先用 `node -v` 查看自己的 node 的版本，如果不是 22，可以把 22 改成自己的版本的最前面的数字。
+
+然后自定义域名那一行，大家如果没有自己的域名，可以不需要管。
+
+```yml
+# .github/workflows/pages.yml
+name: Hexo GitHub Pages Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ 拉取仓库（包含子模块）
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # 2️⃣ 设置 Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: 'npm'
+
+      # 3️⃣ 安装依赖（使用 package-lock.json 确保一致性）
+      - name: Install Dependencies
+        run: |
+          npm ci --prefer-offline
+          npm install hexo-cli -g
+
+      # 4️⃣ 构建网站
+      - name: Build Hexo Site
+        run: |
+          hexo clean
+          hexo generate
+          touch ./public/.nojekyll
+          # echo "example.com" > ./public/CNAME # 自定义域名
+      # 5️⃣ 上传产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+运行以下命令将文件推送到 github
+
+```bash
+git add .
+git commit -m "..."
+git push
+```
+
+以后每次修改了目录想更新都会需要这三个命令，不过后面可以简单一些。
+
+运行之后，访问 用户名.github.io/项目名，就可以访问页面了，不过需要等待构建成功。如果你的项目名正好是 用户名.github.io，那么可以直接通过 用户名.github.io 来访问。大多数人会把博客的项目名叫这个，大家也可以修改成这个。
+
+然后就可以正常写博客发博客了。
+
+## 写博客
+
+一般会使用 markdown 来写博客，其实就很简单，跟 word 差不多的嘛，啥东西不会写了就问一问 deepseek 和 gpt 就好了。
+
+推荐使用 typora 和 vscode 来写，typora 正版需要付费，但可以找到一些特殊版本，vscode 是免费的但是需要安装插件才能预览。
+
+具体的 markdown 语法啥的就不介绍了。
+
+我们的 hexo 博客，发布的博客都需要存放在 source/_post 文件夹下，由于博客需要有时间，标题等信息，我们需要在 .md 文件的开头加入 front-matter
+
+```markdown
+---
+title: Hello world
+date: 2025-09-13 11:12:50
+tags:
+  - 原神
+---
+```
+
+大概像这样的，title 和 date 应该是必填的，tags 可选，如果每次要敲这个肯定很麻烦。
+
+我们可以使用 `hexo new "标题"` 来新建博客，标题不需要带后缀名 `.md` ，当然也可以不用命令来建博客。用这个命令只是会给我们自动加 title 和 date，并且把文件放在 source/_post 下，自己建文件然后加个 front-matter 再放到那个目录下也是一样的。
+
+hexo new 可以指定路径，hexo new "文章标题" --path "自定义目录/文件名"，
+
+```bash
+hexo new "abc" --path a/abc.md
+```
+
+这会在 source/_post/a/ 目录下创建 abc.md，这里文件名不必和 new 后面的字符串相同。
+
+写文章时可以输入 `hexo server` 命令，在浏览器中预览博客，基本上改了博客就会改，但如果改了配置文件，可能就需要重新运行 `hexo server` 了。
+
+## 使用 PS 和 Bash
+
+如果你也嫌每次提交都需要三个命令太长了
+
+```bash
+git add .
+git commit -m "..."
+git push
+```
+
+那我们可以写一个 ps 或者 sh 脚本来帮我们做这个事情，我们每次就只需要输入一行代码，比如 `.\push.ps1 "msg"` 或者 `./push.sh` 。
+
+这个事情可以交给 gpt 或 deepseek 解决，如果它们连这种事情做不好，也没有存在的必要了hhh，虽然我也不会，每次都是问。
+
+这个是 ps1，让 gpt 写的，在 windows 下用这个，想要自定义 msg 信息可以自己改。
+
+```powershell
+# push.ps1
+# 自动提交并推送 Git 仓库，commit message 可选且带时间戳
+
+param(
+    [string]$msg = ""  # 默认空
+)
+
+# 获取当前时间
+$timeStamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+# 生成最终 commit message
+if ([string]::IsNullOrWhiteSpace($msg)) {
+    $commitMessage = "Auto commit at $timeStamp"
+} else {
+    $commitMessage = "$msg (at $timeStamp)"
+}
+
+# 添加所有修改的文件
+git add .
+
+# 提交
+git commit -m $commitMessage
+
+# 推送到默认远程和分支
+git push
+```
+

@@ -45,7 +45,6 @@ jobs:
           hexo generate
           touch ./public/.nojekyll
           echo "blogs.wuyi.host" > ./public/CNAME # 自定义域名
-          # Ciallo
       # 5️⃣ 上传产物
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
