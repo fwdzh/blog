@@ -238,6 +238,14 @@ git push
 
 这个是 ps1，让 gpt 写的，在 windows 下用这个，想要自定义 msg 信息可以自己改。
 
+如果你用 windows，在项目根目录下新建一个 push.ps1 文件，每次要更新博客，只需要输入就可以更新博客。
+
+```bash
+./push.ps1
+```
+
+如果想 commit，就用 `./push.ps1 "xxx"`。
+
 ```powershell
 # push.ps1
 # 自动提交并推送 Git 仓库，commit message 可选且带时间戳
