@@ -67,7 +67,7 @@ disable_top_img: false
 default_top_img:
 
 # The banner image of index page
-index_img: /images/revoc2.png
+index_img: /images/revoc2.jpg
 
 # The banner image of archive page
 archive_img:
@@ -102,7 +102,7 @@ cover:
   archives_enable: true
   # When cover is not set, the default cover is displayed
   default_cover:
-    /images/revco3.png
+    /images/revco3.jpg
 
 # Replace Broken Images
 error_img:
