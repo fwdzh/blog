@@ -102,7 +102,7 @@ cover:
   archives_enable: true
   # When cover is not set, the default cover is displayed
   default_cover:
-    /images/revco3.jpg
+    /images/revoc3.jpg
 
 # Replace Broken Images
 error_img:
