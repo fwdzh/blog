@@ -46,8 +46,9 @@ code_blocks:
 # Formal:
 #   icon: link || the description || color
 social:
-  # fab fa-github: https://github.com/xxxxx || Github || '#24292e'
-  # fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
+  fab fa-github: https://github.com/fwdzh || Github || '#24292e'
+  fas fa-code: https://codeforces.com/profile/Zhangwuji || codeforces ||  '#1f8acb'
+  fas fa-envelope: mailto:wu_yi_@outlook.com || Email || '#4a7dbe'
 
 # --------------------------------------
 # Image Settings
@@ -288,10 +289,10 @@ aside:
       enable: true
       icon: fab fa-github
       text: Follow Me
-      link: https://github.com/xxxxxx
+      link: https://github.com/fwdzh
   card_announcement:
     enable: true
-    content: This is my Blog
+    content: 喵喵喵
   card_recent_post:
     enable: true
     # If set 0 will show all
