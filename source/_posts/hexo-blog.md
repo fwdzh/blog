@@ -333,3 +333,88 @@ npm install hexo-renderer-pug hexo-renderer-stylus --save
 运行 hexo server 查看是否更换成功，提交代码即可完成更换。
 
 其实也挺简单的呀，很方便，可能是我去年太。。。
+
+好吧其实不是，因为这个主题不是通过 npm 安装的，需要再改一些东西，问了下 deepseek 瞎搞了一下，算了能用就行了。
+
+在根目录下新建 `.gitmodules` 文件，运行这个命令
+
+```bash
+git submodule add -f https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly
+```
+
+然后我的 `./github/workflows/page.yml` 改成了
+
+```bash
+name: Hexo GitHub Pages Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ 拉取仓库（包含子模块）
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}  # 确保有足够权限克隆子模块
+
+      # 1.5️⃣ 显式初始化并更新子模块 (可选，但有时更可靠)
+      - name: Init and update submodules
+        run: |
+          git submodule init
+          git submodule update --recursive --remote
+
+      # 2️⃣ 设置 Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: 'npm'
+
+      # 3️⃣ 安装依赖（使用 package-lock.json 确保一致性）
+      - name: Install Dependencies
+        run: |
+          npm ci --prefer-offline
+          npm install hexo-cli -g
+
+      # 4️⃣ 构建网站
+      - name: Build Hexo Site
+        run: |
+          hexo clean
+          hexo generate
+          touch ./public/.nojekyll
+
+      # 5️⃣ 上传产物
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+能用就行了，呃呃，现在可没时间研究这些东西。
