@@ -24,6 +24,13 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}  # 确保有足够权限克隆子模块
+
+      # 1.5️⃣ 显式初始化并更新子模块 (可选，但有时更可靠)
+      - name: Init and update submodules
+        run: |
+          git submodule init
+          git submodule update --recursive --remote
 
       # 2️⃣ 设置 Node.js
       - name: Setup Node.js
@@ -45,6 +52,7 @@ jobs:
           hexo generate
           touch ./public/.nojekyll
           echo "blogs.wuyi.host" > ./public/CNAME # 自定义域名
+
       # 5️⃣ 上传产物
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
