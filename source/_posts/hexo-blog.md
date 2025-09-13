@@ -52,7 +52,7 @@ npm install
 
 初始化完成后，这个文件夹下会多出一些文件。
 
-==对了，如果有 vscode的话，可以在 vscode 中打开文件夹==，因为又有终端又可以看文件，感觉可能方便一些。在 vscode 中，按 `ctrl + ~` 可以打开终端。
+<label style= "color: red">对了，如果有 vscode的话，可以在 vscode 中打开文件夹</label>，因为又有终端又可以看文件，感觉可能方便一些。在 vscode 中，按 `ctrl + ~` 可以打开终端。
 
 现在，运行 `hexo server` 命令。
 
@@ -95,4 +95,12 @@ git push -u origin main
 ```
 
 运行上面的命令之后，刷新浏览器，你应该就可以在你的 github 目录里看到你的博客的文件夹了。
+
+### 部署github pages
+
+先去 github 项目里的设置里，找到 pages，然后把 `Build and deployment` 下面的 `Source` 改成 `GitHub Actions` 。
+
+我们需要在项目的根目录下建一个 `.github/workflows/pages.yml`，开始时这些文件夹都没有的，外面那个文件加就是叫 `.github` 哈，不要去掉那个点。
+
+官方文档里给的这个文件是错的，我贴进去运行报错了。原因好像是把 landscape 当成 jecklly 的主题了，这个是 hexo 的默认主题，然后让 gpt 帮我改了一下，也有点不对，又让 deepseek 改了一下。
 
