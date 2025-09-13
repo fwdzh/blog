@@ -1,26 +1,27 @@
-.github/workflows/pages.yml
-name: Pages
+name: Hexo GitHub Pages
 
 on:
   push:
     branches:
-      - main # default branch
+      - main  # 你代码主分支
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ 拉取仓库
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # If your repository depends on submodule, please see: https://github.com/actions/checkout
           submodules: recursive
-      - name: Use Node.js 22
+
+      # 2️⃣ 使用 Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Examples: 20, 18.19, >=16.20.2, lts/Iron, lts/Hydrogen, *, latest, current, node
-          # Ref: https://github.com/actions/setup-node#supported-version-syntax
           node-version: "22"
+
+      # 3️⃣ 缓存 npm 依赖
       - name: Cache NPM dependencies
         uses: actions/cache@v4
         with:
@@ -28,28 +29,36 @@ jobs:
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
+
+      # 4️⃣ 安装 Hexo CLI、依赖和主题
       - name: Install Dependencies
-        run: | 
+        run: |
           npm i -g hexo-cli
-          npm ci
-          npm install hexo-theme-landscape@latest
-          npm ci
           npm install
-      - name: Build
-        run: npm run build
-      - name: Upload Pages artifact
+          npm install hexo-theme-landscape@latest
+
+      # 5️⃣ 构建 Hexo 网站
+      - name: Build Hexo Site
+        run: |
+          hexo clean
+          hexo generate
+          # 禁用 Jekyll
+          touch ./public/.nojekyll
+
+      # 6️⃣ 上传生成的 public 文件夹作为 artifact
+      - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
+
   deploy:
-    needs: build
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
