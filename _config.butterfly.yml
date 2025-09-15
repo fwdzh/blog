@@ -30,7 +30,7 @@ menu:
 code_blocks:
   # Code block theme: darker / pale night / light / ocean / false
   theme: light
-  macStyle: false
+  macStyle: true
   # Code block height limit (unit: px)
   height_limit: false
   word_wrap: false
@@ -39,7 +39,7 @@ code_blocks:
   copy: true
   language: true
   # true: shrink the code blocks | false: expand the code blocks | none: expand code blocks and hide the button
-  shrink: false
+  shrink: true
   fullpage: false
 
 # Social media links
@@ -452,8 +452,8 @@ busuanzi:
 math:
   # Choose: mathjax, katex
   # Leave it empty if you don't need math
-  use:
-  per_page: true
+  use: mathjax
+  per_page: false # 每页自动加载，不需要则需要在 front-matter 加 mathjax : true
   hide_scrollbar: false
 
   mathjax:
