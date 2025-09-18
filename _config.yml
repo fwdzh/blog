@@ -98,6 +98,17 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: butterfly
 
+# math & butterfly : https://butterfly.js.org/posts/4aa8abbe/
+# kramed:
+#   gfm: true
+#   pedantic: false
+#   sanitize: false
+#   tables: true
+#   breaks: true
+#   smartLists: true
+#   smartypants: true
+
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
